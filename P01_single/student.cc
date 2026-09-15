@@ -8,8 +8,10 @@
 // Correo: alu0101796697@ull.edu.es
 // Fecha: 12/09/2026
 // Archivo cya-P01-student.cc: programa cliente.
-// Contiene la función main del proyecto que usa las clases X e Y
-// para ... (indicar brevemente el objetivo)
+// Contiene la función main del proyecto que usa la clase Student y tres funciones adicionales
+// ShowHelp, AddStudentGrade y ShowGrades
+// El programa permite leer archivos de calificaciones, introducir las calificaciones 
+// individualmente y verlas (guarda la calificación más alta)
 // Referencias:
 // Enlaces de interés
 // Historial de revisiones
@@ -52,4 +54,7 @@ bool Student::operator==(const Student& other) const {
 
 bool Student::operator>(const Student& other) const {
   return numAlu_ > other.numAlu_;
+}
+
+Student::~Student() {
 }

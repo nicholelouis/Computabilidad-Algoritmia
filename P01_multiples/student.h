@@ -30,6 +30,7 @@ class Student{
     bool operator<(const Student& student) const;
     bool operator==(const Student& student) const;
     bool operator>(const Student& student) const;
+    ~Student();
   private:
     std::string alu_;
     int numAlu_;

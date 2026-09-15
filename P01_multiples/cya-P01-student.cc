@@ -8,8 +8,10 @@
 // Correo: alu0101796697@ull.edu.es
 // Fecha: 12/09/2026
 // Archivo cya-P01-student.cc: programa cliente.
-// Contiene la función main del proyecto que usa las clases X e Y
-// para ... (indicar brevemente el objetivo)
+// Contiene la función main del proyecto que usa la clase Student y tres funciones adicionales
+// ShowHelp, AddStudentGrade y ShowGrades
+// El programa permite leer archivos de calificaciones, introducir alumnos y 
+// calificaciones individualmente además de verlas
 // Referencias:
 // Enlaces de interés
 // Historial de revisiones
@@ -19,11 +21,12 @@
 #include <cstdlib>
 #include <map>
 #include <sstream>
-#include <map>
 #include <string>
+#include <vector>
 #include "student.h"
 #include "fstream"
 
+// ShowHelp Muestra el modo de uso del programa.
 void ShowHelp() {
   std::cout << "Grades\n";
   std::cout << "The program allows you to read grades files,\n";
@@ -32,19 +35,29 @@ void ShowHelp() {
   std::cout << "alu grade example -> alu0101010101 9.25\n";
 }
 
-void AddStudentGrade(std::map <Student, double>& students, Student student, double grade){
+/* AddStudentGrade Verifica si existe el estudiante y añade la nueva nota al vector de notas asociado
+a cada estudiante o en caso de que no exista crea el estudiante y le añade la nota inicial.*/
+void AddStudentGrade(std::map <Student, std::vector<double>>& students, Student student, double grade){
   auto s = students.find(student);
   if (s == students.end()) {
     student.SetGrade(grade);
-    students[student]=grade;
-  } else if (s->second < grade) {
-      s->second = grade;
+    std::vector<double> grades;
+    grades.push_back(grade);
+    students[student]=grades;
+  } else {
+      s->second.push_back(grade);
   }
 }
 
-void ShowGrades(std::map <Student, double> students){
+/* ShowGrades recorre el map e imprime por pantalla los estudiantes seguidamente recorre 
+el vector de notas asociado a cada uno e imprime cada una*/
+void ShowGrades(std::map <Student, std::vector<double>> students){
   for (const auto& student : students){
-    std::cout << student.first << student.second  << std::endl;
+    std::cout << student.first << ": ";
+    for (double grade : student.second){
+      std::cout << grade << " ";
+    }
+    std::cout << "\n";
   }
 }
 
@@ -61,7 +74,7 @@ int main(int argc, char* argv[]) {
   std::fstream ficc(name);
   if (!ficc.is_open()) std::cout << "Error: File not found" << std::endl;
 
-  std::map <Student, double> students;
+  std::map <Student, std::vector<double>> students;
 
   std::string line;
   while(std::getline(ficc, line)){
@@ -83,6 +96,7 @@ int main(int argc, char* argv[]) {
     std::cout << "0. Go out" << std::endl;
     std::cout << "Option: ";
     std::cin >> option;
+    std::cout << "\n";
 
     switch (option) {
 
