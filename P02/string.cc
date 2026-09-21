@@ -8,7 +8,7 @@
 // Correo: alu0101796697@ull.edu.es
 // Fecha: 18/09/2026
 // Archivo cya-P02-strings.cc: programa cliente.
-// Contiene la función main del proyecto que usa la clase Student y tres funciones adicionales
+// Contiene la función main del proyecto que usa la clase Language, Alphabet y Str
 // Referencias:
 // Enlaces de interés
 // Historial de revisiones
@@ -70,9 +70,16 @@ bool Str::operator<(const Str& other) const {
   return sequence_ < other.sequence_;
 }
 
-// Añadir logica de igualdad!
 bool Str::operator==(const Str& other) const {
-  return lenght_ == other.lenght_;
+  if (lenght_ == other.lenght_){
+    for( int i = 0; i < lenght_; ++i){
+      if(sequence_[i] != other.sequence_[i]){
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 bool Str::operator>(const Str& other) const {

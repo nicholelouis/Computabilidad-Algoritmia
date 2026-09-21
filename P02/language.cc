@@ -8,7 +8,7 @@
 // Correo: alu0101796697@ull.edu.es
 // Fecha: 18/09/2026
 // Archivo cya-P02-strings.cc: programa cliente.
-// Contiene la función main del proyecto que usa la clase Student y tres funciones adicionales
+// Contiene la función main del proyecto que usa la clase Language, Alphabet y Str
 // Referencias:
 // Enlaces de interés
 // Historial de revisiones
@@ -19,8 +19,8 @@
 
 Language::Language(Alphabet alphabet, const std::set<Str> string_set): alphabet_(alphabet), string_set_(string_set){}
 
-std::string Language::GetLanguage() const {
-    return " ";
+std::set<Str>Language::GetLanguage() const {
+    return string_set_;
 }
 
 std::ostream& operator<<(std::ostream& os, const Language& language){
@@ -33,6 +33,16 @@ std::ostream& operator<<(std::ostream& os, const Language& language){
   os <<  "}";
   return os;
 };
+/*
+bool Language::operator<(const Language& other) const{
 
+}
+bool Language::operator==(const Language& other) const{
+
+}
+bool Language::operator>(const Language& other) const{
+
+}
+*/
 Language::~Language() {
 }

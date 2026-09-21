@@ -8,7 +8,7 @@
 // Correo: alu0101796697@ull.edu.es
 // Fecha: 18/09/2026
 // Archivo cya-P02-strings.cc: programa cliente.
-// Contiene la función main del proyecto que usa la clase Student y tres funciones adicionales
+// Contiene la función main del proyecto que usa la clase Language, Alphabet y Str
 // Referencias:
 // Enlaces de interés
 // Historial de revisiones
@@ -23,6 +23,7 @@ Alphabet::Alphabet(const std::string& sym) {
     for(char c : sym) {
         symbols_.insert(c);
     }
+    lenght_ = symbols_.size();
 }
 
 const std::set<char>& Alphabet::GetAlphabet() const {
@@ -38,7 +39,7 @@ std::ostream& operator<<(std::ostream& os, const Alphabet& alphabet){
   }
   os <<  "}";
   return os;
-};
+}
 
 bool Alphabet::SymbolBelongs(char symbol) const{
   return symbols_.find(symbol) != symbols_.end();
@@ -54,23 +55,18 @@ std::string Alphabet::BelongsToAlphabet(const Str& str) const{
   return "OK";
 }
 
-/*
+bool Alphabet::operator<(const Alphabet& other) const{
+  return symbols_ < other.symbols_;
+}
 
+bool Alphabet::operator==(const Alphabet& other) const{
+  return symbols_ == other.symbols_;  
+}
 
+bool Alphabet::operator>(const Alphabet& other) const{
+  return symbols_ > other.symbols_;
+}
 
-bool Alphabet::operator<(const Alphabet& alphabet) const{
-    
-};
-
-bool Alphabet::operator==(const Alphabet& alphabet) const{
-    
-};
-
-bool Alphabet::operator>(const Alphabet& alphabet) const{
-    
-};
-
-*/
 Alphabet::~Alphabet(){
     
-};
+}
