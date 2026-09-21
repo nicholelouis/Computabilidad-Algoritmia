@@ -77,17 +77,19 @@ int main(int argc, char* argv[]) {
   std::map <Student, std::vector<double>> students;
 
   std::string line;
-  while(std::getline(ficc, line)){
-
+  while (getline(file_in, line)){
     std::stringstream l(line);
-    std::string alu, _, grade_str;
-    l >> alu >> grade_str >> _;
+    std::string s, a;
+    l >> s >> a;
 
-    double grade = std::stod(grade_str);
-    Student student(alu);
-    AddStudentGrade(students, student, grade);
+    Str str(s);
+    Alphabet alphabet(a);
+
+    file_out << str << ": " << alphabet << std::endl;
   }
-  ficc.close();
+
+  file_in.close();
+  file_out.close();
 
   int option;
   do {
@@ -101,23 +103,10 @@ int main(int argc, char* argv[]) {
     switch (option) {
 
       case 1: {
-        std::string alu;
-        double grade;
 
-        std::cout << "Alu ID: ";
-        std::cin >> alu;
-        std::cout << "Grade: ";
-        std::cin >> grade;
-
-        Student student(alu);
-        AddStudentGrade(students, student, grade);
-        ShowGrades(students);
-        break;
       }
 
       case 2:
-        ShowGrades(students);
-        break;
 
       case 0:
         break;
