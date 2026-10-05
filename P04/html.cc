@@ -26,6 +26,8 @@
 #include <iostream>
 #include <algorithm>
 
+// Crea un objeto Html a partir de su nombre de fichero y de su contenido,
+// analiza el texto recibido y crea los objetos Tag correspondientes
 Html::Html(std::string name, std::string text): name_(name) {
   std::regex target_sequence_open(R"(^<(\w+)[^>]*>)");
   std::regex target_sequence_close(R"(</(\w+)>)");
@@ -56,17 +58,18 @@ Html::Html(std::string name, std::string text): name_(name) {
   }
   ProcessComments(text);
 }
-
+// Devuelve el nombre del objeto Html
 std::string Html::GetName() const{
   return "PROGRAM: " + name_ + "\n";
 }
-
+// Devuelve la descripción del objeto Html (el primer comentario del objeto)
 std::string Html::HtmlDescription() const {
   std::string result = "\nDESCRIPTION: \n";
   result += comments_.front().GetContent() + "\n";
   return result;
 }
-
+// Devuelve un texto con la presencia de las etiquetas html,
+// head y body, y el tipo de documento
 std::string Html::HtmlStructure() const {
   std::string result = "\nSTRUCTURE:\n";
   std::string html = TagIsOn("html") ? "TRUE" : "FALSE";
@@ -82,7 +85,7 @@ std::string Html::HtmlStructure() const {
 std::vector<Tag> Html::GetTags() const {
   return tags_;
 }
-
+// Devuelve un texto con los atributos de las etiquetas y su contenido
 std::string Html::TagsAttibutes() const {
   std::string result = "\nATTRIBUTES: \n";
   for (Tag t : tags_){
@@ -93,7 +96,7 @@ std::string Html::TagsAttibutes() const {
   }
   return result;
 }
-
+// Devuelve un texto con las etiquetas del html y el número de línea de cada una
 std::string Html::TagsAnalize() const {
   std::string result = "\nTAGS: \n";
   for( Tag t : tags_ ){
@@ -101,7 +104,8 @@ std::string Html::TagsAnalize() const {
   }
   return result;
 }
-
+// Analiza el texto de entrada, busca los comentarios de una o varias líneas
+// y crea los objetos Comment correspondientes
 void Html::ProcessComments(const std::string& text) {
   std::regex target_sequence_comments(R"(<!--([\s\S]*?)-->)");
   auto begin = std::sregex_iterator(text.begin(), text.end(), target_sequence_comments);
@@ -120,7 +124,7 @@ void Html::ProcessComments(const std::string& text) {
     comments_.push_back(c);
   }
 }
-
+// Devuelve un texto con los comentarios y el número de línea de cada uno
 std::string Html::GetComments() const {
   std::string result = "COMMENTS: \n";
   int i = 0;
@@ -136,7 +140,7 @@ std::string Html::GetComments() const {
   }
   return result;
 }
-
+// Devuelve true si la etiqueta está presente en el objeto
 bool Html::TagIsOn(const std::string& tag) const {
   bool result = false;
   for (Tag t : tags_) {

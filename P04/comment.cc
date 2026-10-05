@@ -22,13 +22,14 @@
 #include <iostream>
 #include <regex>
 
+// Crea un objeto Comment
 Comment::Comment(std::string content, int line): content_(content), starting_line_(line) {
   int num_lines = content_.empty() ? 0 : std::count(content_.begin(), content_.end(), '\n') + 1;
   if (num_lines > 1) {
     finish_line_ = starting_line_ + num_lines - 1;
   } 
 }
-
+// Devuelve  un texto con el contenido del comentario
 std::string Comment::GetContent() const{
   std::regex target_sequence_comments(R"(<!--([\s\S]*?)-->)");
   std::smatch match;
@@ -36,7 +37,7 @@ std::string Comment::GetContent() const{
   std::string comment = match[1].str();
   return comment;
 }
-
+// Devuelve un texto con el número de linea/s del comentario
 std::string Comment::Line() const {
   std::string result = "[Line " + std::to_string(starting_line_);
   if (finish_line_ != 0){

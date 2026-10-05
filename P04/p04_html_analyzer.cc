@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
       extra_option = true;
     } else {
       std::cerr << "Error: unknown option '" << option << "'\n"
-                << "Try 'p04_html_analyzer --help' for more information.\n";
+      << "Try 'p04_html_analyzer --help' for more information.\n";
       return 1;
     }
   }
@@ -61,13 +61,13 @@ int main(int argc, char* argv[]) {
   std::ifstream file_in(ficc_in);
   std::ofstream file_out(ficc_out);
   if (!file_in.is_open()) std::cout << "Error: File not found" << std::endl;
-
+  // Extrae el contenido del fichero de entrada y lo guarda en la variable content
   std::ostringstream buffer;
   buffer << file_in.rdbuf();
-  std::string text = buffer.str();
-
-  Html html(ficc_in, text);
-
+  std::string content = buffer.str();
+  // Crea un objeto Html mediante el nombre del fichero de entrada y su contenido
+  Html html(ficc_in, content);
+  // Crea el fichero de salida mediante los métodos del objeto html
   if (file_out.is_open()) {    
     file_out << html.GetName();
     file_out << html.HtmlDescription();

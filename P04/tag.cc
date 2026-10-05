@@ -24,6 +24,8 @@
 #include <vector>
 #include <map>
 
+// Crea una etiqueta a partir de su texto indicando si es de apertura
+// o de cierre y la línea del fichero en la que aparece
 Tag::Tag(std::string str, bool open, int line): str_(str), open_(open), line_(line){
   std::regex target_sequence_open(R"(^<(/?\w+))");
   std::smatch match;
@@ -52,14 +54,17 @@ std::string Tag::GetLine() const {
   return "[Line " + std::to_string(line_) + "]";
 }
 
+// Devuelve false si la etiqueta no tiene atributos
 bool Tag::Attributes() const {
   return not attributes_.empty();
 }
-
+// Devuelve true si la etiqueta es de apertura
 bool Tag::isOpenTag() const {
   return open_;
 }
-
+// Analiza las etiquetas de apertura que tienen atributos y los guarda en el
+// maps attributes_ usando el nombre del atributo como clave y su valor como
+// contenido, mediante los grupos de captura de la expresión regular
 void Tag::ProcessTagAttributes(const std::string& text){
   std::regex target_sequence(R"re((\w+)=("(?:[^"]*)"))re");
   std::vector<std::string> matchs;
