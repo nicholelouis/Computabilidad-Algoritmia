@@ -23,17 +23,52 @@
 #include "state.h"
 #include "automaton.h"
 
-void ShowHelp() {
+/// Opciones de ejecución recibidas por línea de comandos.
+struct Options
+{
+  /// Mostrar al final el recuento de cadenas aceptadas y rechazadas.
+  bool show_summary = false;
+};
+
+void ShowHelp()
+{
   std::cout << "DFA Simulator\n";
   std::cout << "The program accepts as arguments an input .html file to be analyzed\n";
   std::cout << "and an output file where the result will be stored.\n";
   std::cout << "Input format:\n";
   std::cout << "./p06_DFA_simulator file_in.dfa file_out.txt\n";
 }
+
+/**
+ * @brief Interpreta las opciones que siguen a los dos ficheros.
+ *
+ * @param argc Número de argumentos.
+ * @param argv Vector de argumentos.
+ * @return Opciones activadas.
+ * @throw std::invalid_argument Si alguna opción no se reconoce.
+ */
+Options ParseOptions(int argc, char *argv[])
+{
+  Options options;
+  for (int i = 3; i < argc; ++i)
+  {
+    const std::string option = argv[i];
+    if (option == "--summary")
+    {
+      options.show_summary = true;
+    }
+    else
+    {
+      throw std::invalid_argument("Opción desconocida: " + option);
+    }
+  }
+  return options;
+}
+
 /**
  * @brief Lee de un file el DFA y construye el autómata.
  *
- * Ignora las líneas vacías y las de comentario. 
+ * Ignora las líneas vacías y las de comentario.
  * Las tres primeras líneas son el alfabeto, el número de estados
  * y el estado de arranque, el resto cada estado.
  *
@@ -42,24 +77,25 @@ void ShowHelp() {
  * @throw std::invalid_argument Si el fichero está incompleto, algún
  * campo no es válido.
  */
-Automata ReadAutomaton(std::istream& file){
+Automata ReadAutomaton(std::istream &file) {
   std::string line;
   std::vector<std::string> dfa_lines;
-  while (std::getline(file, line)) {
+  while (std::getline(file, line))
+  {
     if (line.empty() || line.find("//") == 0) {
       continue;
     }
     dfa_lines.push_back(line);
   }
   if (dfa_lines.size() < 3) {
-     throw std::invalid_argument("Fichero .dfa incompleto");
+    throw std::invalid_argument("Fichero .dfa incompleto");
   }
-  
   Alphabet alphabet(dfa_lines[0]);
   int total_states = std::stoi(dfa_lines[1]);
   int start_state_id = std::stoi(dfa_lines[2]);
   std::string states;
-  for (std::size_t i = 3; i < dfa_lines.size(); ++i) {
+  for (std::size_t i = 3; i < dfa_lines.size(); ++i)
+  {
     states += dfa_lines[i] + '\n';
   }
 
@@ -72,11 +108,14 @@ Automata ReadAutomaton(std::istream& file){
  *
  * Lee línea por línea, ignorando las líneas en blanco, e imprime
  * por pantalla la traza de cada simulación.
- * 
+ *
  * @param automata Autómata con el que se evalúan las cadenas.
  * @param input_file Flujo de entrada con las cadenas, una por línea.
+ * @param options Opciones de ejecución activadas.
  */
-void EvaluateInputStrings(const Automata& automata, std::istream& input_file) {
+void EvaluateInputStrings(const Automata &automata, std::istream &input_file, const Options &options) {
+  int accepted = 0;
+  int rejected = 0;
   std::string line;
   while (std::getline(input_file, line)) {
     if (line.find_first_not_of(" \t\r") == std::string::npos) {
@@ -86,19 +125,29 @@ void EvaluateInputStrings(const Automata& automata, std::istream& input_file) {
     if (line == "&") {
       line = "";
     }
-    automata.Accepts(line, std::cout);
+    if (automata.Accepts(line, std::cout)){
+      ++accepted;
+    }
+    else {
+      ++rejected;
+    }
     std::cout << '\n';
+  }
+  if (options.show_summary)
+  {
+    std::cout << "Resumen: " << accepted << " aceptadas, " << rejected
+              << " rechazadas.\n";
   }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   if (argc == 2 && std::string(argv[1]) == "--help") {
     ShowHelp();
     return 0;
   }
-  if (argc != 3 && argc != 4) {
-    std::cout << "Instructions: ./p06_DFA_simulator file_in.dfa file_out.txt \n"
-    << "Try 'p06_DFA_simulator --help' for more information.\n";
+  if (argc < 3) {
+    std::cout << "Instructions: ./p06_DFA_simulator file_in.dfa file_out.txt [--summary]\n"
+              << "Try 'p06_DFA_simulator --help' for more information.\n";
     return 1;
   }
   std::ifstream ficc_dfa(argv[1]);
@@ -109,23 +158,13 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  bool extra_option = false;
-  if (argc == 4) {
-    std::string option = argv[3];
-    if (option == "--option") {
-      extra_option = true;
-    } else {
-      std::cerr << "Error: unknown option '" << option << "'\n"
-      << "Try 'p06_DFA_simulator --help' for more information.\n";
-      return 1;
-    }
-  }
-
   try {
+    const Options options = ParseOptions(argc, argv);
     Automata automata = ReadAutomaton(ficc_dfa);
-    EvaluateInputStrings(automata, ficc_txt);
-  } catch (const std::exception& error) {
-    std::cerr << "Error en el fichero .dfa: " << error.what() << '\n';
+    EvaluateInputStrings(automata, ficc_txt, options);
+  }
+  catch (const std::exception &error) {
+    std::cerr << "Error: " << error.what() << '\n';
     return 1;
   }
 
